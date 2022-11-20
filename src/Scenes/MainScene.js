@@ -1,110 +1,383 @@
-"use strict";
 // You can write more code here
+import { Card, Button } from "../Classes/gameElements.js";
 // / <reference path="../../node_modules/phaser/types/phaser.d.ts"/>
 /* START OF COMPILED CODE */
-Object.defineProperty(exports, "__esModule", { value: true });
-class MainScene extends Phaser.Scene {
+export default class MainScene extends Phaser.Scene {
+    centerH = window.innerHeight / 2;
+    centerW = window.innerWidth / 2;
+    gridMapSmall = {
+        x: [this.centerW - 194, this.centerW - 4, this.centerW + 186],
+        y: [this.centerH - 233, this.centerH - 108, this.centerH + 22, this.centerH + 152],
+        bg: { x: this.centerW, y: this.centerH, scale: { x: 0.6, y: 0.6 } }
+    };
+    gridMapMedium = {
+        x: [this.centerW - 284, this.centerW - 94, this.centerW + 96, this.centerW + 286],
+        y: [this.centerH - 233, this.centerH - 108, this.centerH + 22, this.centerH + 152],
+        bg: { x: this.centerW, y: this.centerH, scale: { x: 0.8, y: 0.6 } }
+    };
+    gridMapBig = {
+        x: [this.centerW - 476, this.centerW - 286, this.centerW - 96, this.centerW + 94, this.centerW + 284, this.centerW + 474],
+        y: [this.centerH - 390 + 70, this.centerH - 260 + 70, this.centerH - 130 + 70, this.centerH + 70, this.centerH + 130 + 70, this.centerH + 260 + 70],
+        bg: { x: this.centerW, y: this.centerH + 70, scale: { x: 1.2, y: 0.9 } }
+    };
+    //Game Setup
+    selectedMap;
+    symbols_layer;
+    bg;
+    cards = [];
+    cardFrames = [];
+    baseCardFrames = ['symbol_1.png', 'symbol_2.png', 'symbol_3.png', 'symbol_4.png', 'symbol_5.png', 'symbol_6.png'];
+    alternatingText = {
+        playerMatch: {
+            text: 'Nice!',
+            duration: 2,
+        },
+        playerFail: {
+            text: 'Try again',
+            duration: 2,
+        },
+        playerWin: {
+            text: 'You won!',
+            duration: 2
+        },
+        playerLoss: {
+            text: 'Game Over',
+            duration: 2
+        },
+        gameStart: {
+            text: 'Start!',
+            duration: 2
+        },
+    };
+    //Game State
+    clickedCard1;
+    clickedCard2;
+    matchCount = 0;
+    remainingMoves;
+    remainingMovesText;
+    isPaused = false;
+    playerFeedBackText;
+    retryButton;
+    smallLayoutGame;
+    mediumLayoutGame;
+    bigLayoutGame;
     constructor() {
         super("MainScene");
         /* START-USER-CTR-CODE */
         // Write your code here.
         /* END-USER-CTR-CODE */
     }
-    editorCreate() {
-        // bg
-        const bg = this.add.image(408, 368, "bg");
-        bg.scaleX = 0.6;
-        bg.scaleY = 0.6;
-        // symbols_layer
-        const symbols_layer = this.add.layer();
-        // symbol11
-        const symbol11 = this.add.sprite(215.0637664794922, 521.4500732421875, "symbols", "symbol_6.png");
-        symbol11.scaleX = 0.5;
-        symbol11.scaleY = 0.5;
-        symbols_layer.add(symbol11);
-        // symbol10
-        const symbol10 = this.add.sprite(405.06378173828125, 521.4500732421875, "symbols", "symbol_1.png");
-        symbol10.scaleX = 0.5;
-        symbol10.scaleY = 0.5;
-        symbols_layer.add(symbol10);
-        // symbol9
-        const symbol9 = this.add.sprite(595.0637817382812, 521.4500732421875, "symbols", "symbol_3.png");
-        symbol9.scaleX = 0.5;
-        symbol9.scaleY = 0.5;
-        symbols_layer.add(symbol9);
-        // symbol8
-        const symbol8 = this.add.sprite(595, 392, "symbols", "symbol_3.png");
-        symbol8.scaleX = 0.5;
-        symbol8.scaleY = 0.5;
-        symbols_layer.add(symbol8);
-        // symbol7
-        const symbol7 = this.add.sprite(405, 392, "symbols", "symbol_1.png");
-        symbol7.scaleX = 0.5;
-        symbol7.scaleY = 0.5;
-        symbols_layer.add(symbol7);
-        // symbol6
-        const symbol6 = this.add.sprite(215, 392, "symbols", "symbol_6.png");
-        symbol6.scaleX = 0.5;
-        symbol6.scaleY = 0.5;
-        symbols_layer.add(symbol6);
-        // symbol5
-        const symbol5 = this.add.sprite(595, 263, "symbols", "symbol_5.png");
-        symbol5.scaleX = 0.5;
-        symbol5.scaleY = 0.5;
-        symbols_layer.add(symbol5);
-        // symbol4
-        const symbol4 = this.add.sprite(405, 263, "symbols", "symbol_4.png");
-        symbol4.scaleX = 0.5;
-        symbol4.scaleY = 0.5;
-        symbols_layer.add(symbol4);
-        // symbol3
-        const symbol3 = this.add.sprite(215, 263, "symbols", "symbol_3.png");
-        symbol3.scaleX = 0.5;
-        symbol3.scaleY = 0.5;
-        symbols_layer.add(symbol3);
-        // symbol2
-        const symbol2 = this.add.sprite(595, 135, "symbols", "symbol_2.png");
-        symbol2.scaleX = 0.5;
-        symbol2.scaleY = 0.5;
-        symbols_layer.add(symbol2);
-        // symbol1
-        const symbol1 = this.add.sprite(405, 135, "symbols", "symbol_1.png");
-        symbol1.scaleX = 0.5;
-        symbol1.scaleY = 0.5;
-        symbols_layer.add(symbol1);
-        // symbol0
-        const symbol0 = this.add.sprite(215, 135, "symbols", "symbol_0.png");
-        symbol0.scaleX = 0.5;
-        symbol0.scaleY = 0.5;
-        symbols_layer.add(symbol0);
-        this.bg = bg;
-        this.symbol11 = symbol11;
-        this.symbol10 = symbol10;
-        this.symbol9 = symbol9;
-        this.symbol8 = symbol8;
-        this.symbol7 = symbol7;
-        this.symbol6 = symbol6;
-        this.symbol5 = symbol5;
-        this.symbol4 = symbol4;
-        this.symbol3 = symbol3;
-        this.symbol2 = symbol2;
-        this.symbol1 = symbol1;
-        this.symbol0 = symbol0;
-        this.events.emit("scene-awake");
+    //Game Creation ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    create() {
+        this.input.mouse.disableContextMenu();
+        this.editorCreate('small');
+        this.game.events.emit("GameCreated");
     }
-    /* START-USER-CODE */
-    // Write your code here
-    symbolsArr() {
-        return [this.symbol0, this.symbol1, this.symbol2, this.symbol3, this.symbol4, this.symbol5, this.symbol6, this.symbol7, this.symbol8, this.symbol9, this.symbol10, this.symbol11];
+    destroyGame() {
+        this.bg?.destroy();
+        this.symbols_layer.removeAll();
+        this.symbols_layer.destroy();
+        this.symbols_layer = undefined;
     }
+    editorCreate(mapType, isLevelChange) {
+        this.selectedMap = mapType === 'small' ? this.gridMapSmall : mapType === 'medium' ? this.gridMapMedium : this.gridMapBig;
+        this.bg = this.add.image(this.selectedMap.bg.x, this.selectedMap.bg.y, "bg");
+        this.symbols_layer = this.add.layer();
+        if (!isLevelChange) {
+            this.playerFeedBackText = this.add.text(550, 40, this.alternatingText.gameStart.text, { fontFamily: 'Walkway Condensed,sans-serif', fontSize: '1.5rem' });
+            this.showTemporaryText(this.playerFeedBackText, this.alternatingText.gameStart.text, false);
+            this.events.emit("scene-awake");
+            this.remainingMovesText = this.add.text(60, 20, `Remaining moves:${this.remainingMoves}`, { fontFamily: 'Walkway Condensed,sans-serif', fontSize: '2.5rem' });
+            this.remainingMovesText.setDepth(1);
+            this.retryButton = new Button(this.centerW, this.centerH, 'Play Again', this, () => {
+                this.resetGame();
+            }, false);
+            this.playerFeedBackText.setDepth(1);
+            this.retryButton.PhaserPrototype.setDepth(1).setScale(1.5, 1.5);
+            this.smallLayoutGame = new Button(this.centerW - 200, 45, 'Small 3 x 4', this, () => {
+                this.resetGame();
+                this.destroyGame();
+                this.editorCreate('small', true);
+            });
+            this.smallLayoutGame.PhaserPrototype.setDepth(1);
+            this.mediumLayoutGame = new Button(this.centerW, 45, 'Medium 4 x 4', this, () => {
+                this.resetGame();
+                this.destroyGame();
+                this.editorCreate('medium', true);
+            });
+            this.mediumLayoutGame.PhaserPrototype.setDepth(1);
+            this.bigLayoutGame = new Button(this.centerW + 200, 45, 'Big 6 x 6', this, () => {
+                this.resetGame();
+                this.destroyGame();
+                this.editorCreate('big', true);
+            });
+            this.bigLayoutGame.PhaserPrototype.setDepth(1);
+        }
+        this.cardFrames = this.baseCardFrames;
+        this.remainingMoves = (this.selectedMap.x.length * this.selectedMap.y.length) / 2;
+        this.bg.scaleX = this.selectedMap.bg.scale.x;
+        this.bg.scaleY = this.selectedMap.bg.scale.y;
+        this.setRandomImgArray('symbol', 'png');
+        this.cardFrames = this.shuffleArray(this.createFramePairs(this.cardFrames));
+        this.cards = this.createGameBoard(this.selectedMap.x.length, this.selectedMap.y.length, this.selectedMap);
+        this.cards.forEach((card) => {
+            card.on('test', (cardClicked) => {
+                this.handleClick(cardClicked);
+            });
+            this.symbols_layer.add(card);
+        });
+        this.revealAllCards(this.cards);
+    }
+    createFramePairs(frames) {
+        const cardFramePairs = frames.flatMap((frame => [frame, frame]));
+        return cardFramePairs;
+    }
+    setRandomImgArray(imgName, imgType) {
+        const numOfArray = this.calcNeededCardFrames();
+        const numOfType = this.cardFrames.length;
+        const randomArray = [];
+        for (let i = 0; i < numOfArray; i++) {
+            const img = `${imgName}_${this.getRandomInt(numOfType)}.${imgType}`;
+            randomArray.push(img);
+        }
+        this.cardFrames = [...this.cardFrames, ...randomArray];
+        return randomArray;
+    }
+    //Calculate amount of card frames to generate
+    calcNeededCardFrames() {
+        const singleCardsAmount = (this.selectedMap.x.length * this.selectedMap.y.length) / 2;
+        const extraCardFramesToGen = singleCardsAmount - this.cardFrames.length;
+        return extraCardFramesToGen;
+    }
+    createGameBoard(xAxisSize, yAxisSize, boardInfo) {
+        const cardArr = [];
+        let currFrameIdx = 0;
+        for (let i = 0; i < xAxisSize; i++) {
+            for (let j = 0; j < yAxisSize; j++) {
+                const cardConfig = { scene: this, x: this.selectedMap.x[i], y: this.selectedMap.y[j], key: "symbols", picFrame: this.cardFrames[currFrameIdx] };
+                const currCard = new Card(cardConfig);
+                cardArr.push(currCard);
+                currFrameIdx++;
+            }
+        }
+        return cardArr;
+    }
+    //Game Creation END ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //Game Mechanics ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //Attempts to swap locations of two random cards
+    async swapCards() {
+        const aviableCards = this.cards.filter(card => !card.isFlipped && card.isSwappable);
+        if (!aviableCards.length)
+            return;
+        const targetCardToSwap = aviableCards[Phaser.Math.Between(0, aviableCards.length - 1)];
+        try {
+            const { x: targetCardX, y: targetCardY } = JSON.parse(JSON.stringify(targetCardToSwap));
+            const neighboringCards = this.findNeighbors(targetCardX, targetCardY, aviableCards);
+            if (neighboringCards.length) {
+                const randomNeighbor = neighboringCards[Phaser.Math.Between(0, neighboringCards.length - 1)];
+                const { x: randomNeighborX, y: randomNeighborY } = JSON.parse(JSON.stringify(randomNeighbor));
+                while ((randomNeighbor.x <= targetCardX && randomNeighbor.x >= targetCardX) || (randomNeighbor.y !== targetCardY) || (targetCardToSwap.x <= randomNeighborX + 2 && targetCardToSwap.x >= randomNeighborX - 2) || (targetCardToSwap.y !== randomNeighborY)) {
+                    await this.delay(10);
+                    if (randomNeighbor.x > targetCardX) {
+                        randomNeighbor.x -= 7;
+                    }
+                    else if (randomNeighbor.x < targetCardX) {
+                        randomNeighbor.x += 7;
+                    }
+                    if (randomNeighbor.y > targetCardY) {
+                        randomNeighbor.y -= 5;
+                    }
+                    else if (randomNeighbor.y < targetCardY) {
+                        randomNeighbor.y += 5;
+                    }
+                    if (targetCardToSwap.x > randomNeighborX) {
+                        targetCardToSwap.x -= 7;
+                    }
+                    else if (targetCardToSwap.x < randomNeighborX) {
+                        targetCardToSwap.x += 7;
+                    }
+                    if (targetCardToSwap.y > randomNeighborY) {
+                        targetCardToSwap.y -= 5;
+                    }
+                    else if (targetCardToSwap.y < randomNeighborY) {
+                        targetCardToSwap.y += 5;
+                    }
+                }
+                randomNeighbor.x = targetCardX;
+                randomNeighbor.y = targetCardY;
+                targetCardToSwap.x = randomNeighborX;
+                targetCardToSwap.y = randomNeighborY;
+            }
+            else {
+                targetCardToSwap.isSwappable = false;
+                this.swapCards();
+            }
+        }
+        catch (error) {
+        }
+    }
+    revealCard(card) {
+        card.flip1.play();
+        card.setUpFlip1();
+        setTimeout(() => {
+            card.flip2.play();
+            card.setUpFlip2();
+        }, 3000);
+    }
+    async revealAllCards(card) {
+        for (let i = 0; i < card.length; i++) {
+            const currCard = card[i];
+            await this.delay(50);
+            this.revealCard(currCard);
+        }
+    }
+    async checkMatch(selectedCards) {
+        const isMatch = selectedCards[0].picUrl === selectedCards[1].picUrl;
+        await this.delay(1000);
+        if (isMatch) {
+            this.handleMatch();
+        }
+        else {
+            this.remainingMoves--;
+            this.handleMissMatch(selectedCards);
+            if (this.remainingMoves <= 0) {
+                await this.delay(500);
+                this.handleLoss();
+                return;
+            }
+        }
+    }
+    //Freezes all cards to prevent them from being clicked
+    toggleFreeze(isFrozen) {
+        this.cards.forEach(card => card.isFrozen = isFrozen);
+    }
+    //Resets currently selected cards
+    resetClickedCards() {
+        this.clickedCard1 = undefined;
+        this.clickedCard2 = undefined;
+    }
+    handleWin() {
+        this.showTemporaryText(this.playerFeedBackText, this.alternatingText.playerWin.text, true, 2000);
+        this.toggleFreeze(true);
+        this.isPaused = true;
+        this.retryButton.PhaserPrototype.setVisible(true);
+    }
+    resetGame() {
+        this.resetClickedCards();
+        const sequense = this.shuffleArray(this.createCoordsSequense());
+        this.cards.forEach((card, idx) => {
+            card.resetCard(true);
+            card.x = sequense[idx][0];
+            card.y = sequense[idx][1];
+        });
+        this.remainingMoves = (this.selectedMap.x.length * this.selectedMap.y.length) / 2;
+        this.matchCount = 0;
+        this.isPaused = false;
+        this.retryButton.PhaserPrototype.setVisible(false);
+        this.revealAllCards(this.cards);
+    }
+    //Created an array of all the possible location combination
+    createCoordsSequense() {
+        let sequense = [];
+        for (let i = 0; i < this.selectedMap.x.length; i++) {
+            for (let j = 0; j < this.selectedMap.y.length; j++) {
+                sequense = [...sequense, [this.selectedMap.x[i], this.selectedMap.y[j]]];
+            }
+        }
+        return sequense;
+    }
+    handleLoss() {
+        this.showTemporaryText(this.playerFeedBackText, this.alternatingText.playerLoss.text, true, 2000);
+        this.toggleFreeze(true);
+        this.isPaused = true;
+        this.retryButton.PhaserPrototype.setVisible(true);
+    }
+    handleMatch() {
+        // this.
+        this.matchCount++;
+        this.showTemporaryText(this.playerFeedBackText, this.alternatingText.playerMatch.text, false);
+        this.resetClickedCards();
+        if (this.matchCount === this.cardFrames.length / 2) {
+            this.handleWin();
+            return;
+        }
+        this.swapCards();
+    }
+    handleMissMatch(selectedCards) {
+        selectedCards.forEach((card) => {
+            card.resetCard();
+            card.flip2.play();
+            card.setUpFlip2();
+        });
+        this.resetClickedCards();
+        this.showTemporaryText(this.playerFeedBackText, this.alternatingText.playerFail.text, false);
+    }
+    handleClick(card) {
+        if (this.isPaused)
+            return;
+        if (!this.clickedCard1) {
+            this.clickedCard1 = card;
+            return;
+        }
+        else if (!this.clickedCard2) {
+            this.toggleFreeze(true);
+            this.clickedCard2 = card;
+            this.checkMatch([this.clickedCard1, this.clickedCard2]);
+        }
+    }
+    //Game Mechanics END------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //Helper Functions ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //Helps to stop interupting animations
+    delay(delay) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(null);
+            }, delay);
+        });
+    }
+    //Generic text displayer
+    showTemporaryText(textGameObj, text, isGameOver, duration = 500) {
+        this.isPaused = true;
+        this.toggleFreeze(true);
+        textGameObj.setText(text);
+        textGameObj.visible = true;
+        if (!isGameOver) {
+            setTimeout(() => {
+                this.isPaused = false;
+                this.toggleFreeze(false);
+                textGameObj.visible = false;
+                textGameObj.setText('');
+            }, duration);
+        }
+    }
+    getRandomInt(max, min = 1) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    //Finds the neighboring cards of the first card to be swapped
+    findNeighbors(x, y, aviableCards) {
+        const xIdx = this.selectedMap.x.indexOf(x);
+        const yIdx = this.selectedMap.y.indexOf(y);
+        const xNeighbors = [this.selectedMap.x[xIdx - 1], this.selectedMap.x[xIdx], this.selectedMap.x[xIdx + 1]];
+        const yNeighbors = [this.selectedMap.y[yIdx - 1], this.selectedMap.y[yIdx], this.selectedMap.y[yIdx + 1]];
+        const neighbors = aviableCards.filter(card => {
+            return (xNeighbors.includes(card.x) && yNeighbors.includes(card.y) && (card.x !== x && card.y !== y));
+        });
+        return neighbors;
+    }
+    shuffleArray(shuffleArray) {
+        for (let i = shuffleArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffleArray[i], shuffleArray[j]] = [shuffleArray[j], shuffleArray[i]];
+        }
+        return shuffleArray;
+    }
+    // Phaser Base Methods
     preload() {
         this.load.pack("pack", './Assets/game_pack_sd.json');
     }
-    create() {
-        this.editorCreate();
-        this.game.events.emit("GameCreated");
+    update(time, delta) {
+        this.remainingMovesText.setText(`Remaining Moves: ${this.remainingMoves}`);
     }
 }
-exports.default = MainScene;
-/* END OF COMPILED CODE */
-// You can write more code here
